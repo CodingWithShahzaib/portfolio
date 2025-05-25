@@ -88,7 +88,7 @@ const HeroSection = () => {
   const roles = [
     "Senior Software Engineer",
     "Full-Stack Developer",
-    "Professional Ctrl+C Ctrl+V Dev from ChatGPT",
+    "AI Agent Developer",
   ];
 
   return (
