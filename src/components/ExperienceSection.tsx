@@ -2,59 +2,176 @@ import React from "react";
 import { Timeline } from "@/components/ui/timeline";
 import { cn } from "@/utils/cn";
 import { motion } from "framer-motion";
+import { ExpandableCarousel } from "@/components/ui/expandable-carousel";
 
 const experienceItems = [
   {
-    title: "2024",
+    title: "Feb 2024 - Present",
     content: (
-      <div className="bg-black/30 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-neutral-800">
-        <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Infaque (Senior Software Engineer)</h3>
-        <p className="text-neutral-300 mb-4 text-sm sm:text-base leading-relaxed">
-          Integrated Stripe, PayPal, Paygood; built dashboards, automated donation tracking, and multi-channel outreach.
-        </p>
-        <span className="text-neutral-400 text-xs sm:text-sm">Feb 2024 – Present (1.5 Years)</span>
+      <div>
+        <div className="bg-black/30 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-neutral-800 mb-6">
+          <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Infaque | Senior Software Engineer</h3>
+          <p className="text-cyan-400 mb-4 text-sm font-semibold">Experience: 1.5 Years</p>
+          <div className="text-neutral-300 mb-4 text-sm sm:text-base leading-relaxed space-y-2">
+            <p>• Integrated and configured Stripe, PayPal, and Paygood payment processors for seamless donation experiences.</p>
+            <p>• Implemented secure session creation, payment confirmation, and webhook handling for all payment providers.</p>
+            <p>• Automated parsing and processing of Interac payment notification emails for seamless donation tracking.</p>
+            <p>• Designed and executed a comprehensive outreach feature, increasing campaign engagement by 25%.</p>
+            <p>• Automated backend data processing, including parsing, validation, and duplicate management, using serverless cloud functions.</p>
+            <p>• Integrated multiple third-party APIs (Eventbrite, Xero, Mailchimp, QuickBooks, Google, Meta) for data synchronization and analytics.</p>
+            <p>• Built robust backend services for dashboard management, KPI refresh, and financial reporting using Firebase Cloud Functions and Prisma ORM.</p>
+            <p>• Enabled bulk data entry and validation for programs, donors, and HR via CSV and API integrations.</p>
+            <p>• Automated KPI collection and reporting for financial and marketing metrics.</p>
+          </div>
+        </div>
+        <ExpandableCarousel 
+          images={[
+            {
+              src: "./art1.png",
+              alt: "Payment integration dashboard",
+              title: "Payment Integration Dashboard",
+              description: "Comprehensive payment processing system integrating Stripe, PayPal, and Paygood for seamless donation experiences with secure session creation and webhook handling."
+            },
+            {
+              src: "./art2.png",
+              alt: "API integration workflow",
+              title: "Multi-API Integration System",
+              description: "Integrated multiple third-party APIs including Eventbrite, Xero, Mailchimp, QuickBooks, Google, and Meta for comprehensive data synchronization and analytics."
+            },
+            {
+              src: "./art3.png",
+              alt: "Dashboard and analytics",
+              title: "Analytics & KPI Dashboard",
+              description: "Built robust backend services for dashboard management, KPI refresh, and financial reporting using Firebase Cloud Functions and Prisma ORM with automated metrics collection."
+            },
+            {
+              src: "./art4.png",
+              alt: "Campaign management system",
+              title: "Campaign Management Platform",
+              description: "Comprehensive outreach feature that increased campaign engagement by 25% with automated backend data processing, validation, and duplicate management using serverless cloud functions."
+            },
+            {
+              src: "./art6.png",
+              alt: "Donation Form",
+              title: "Donation Form",
+              description: "A donation form with a custom payment processor, where users can donate to a campaign."
+            },
+            {
+              src: "./art7.png",
+              alt: "Bulk data entry",
+              title: "Donation Form Payment Screen",
+              description: "A payment screen for the donation form, where use can pay for the donation."
+            },
+            {
+              src: "./art8.png",
+              alt: "Bulk data entry",
+              title: "Thank you Screen",
+              description: "A thank you screen for the donation form, where use can see the donation details."
+            }
+          ]}
+        />
       </div>
     ),
   },
   {
-    title: "2023 - 2024",
+    title: "Aug 2022 - Feb 2024",
     content: (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        <div className="bg-black/30 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-neutral-800">
-          <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Artmetrica (Consulted by Infaque)</h3>
-          <p className="text-neutral-300 mb-4 text-sm sm:text-base leading-relaxed">
-            Integrated APIs (Eventbrite, Xero, Mailchimp, QuickBooks, Google, Meta); built backend services, automated KPI reporting, and secure user management.
-          </p>
-          <span className="text-neutral-400 text-xs sm:text-sm">Feb 2024 – Present (1.5 Years)</span>
+      <div>
+        <div className="bg-black/30 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-neutral-800 mb-6">
+          <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Aiworks.ai | Software Engineer</h3>
+          <p className="text-cyan-400 mb-4 text-sm font-semibold">Experience: 1.5 Years</p>
+          <div className="text-neutral-300 mb-4 text-sm sm:text-base leading-relaxed space-y-2">
+            <p>• Created tools for dynamic agent routing and orchestration.</p>
+            <p>• Integrated LLMs to boost productivity for stakeholders.</p>
+            <p>• Developed a Proof of Concept (PoC) to improve marketplace experience.</p>
+            <p>• Automated routine tasks to reduce manual workload.</p>
+            <p>• Implemented RAG for product data retrieval from vector databases.</p>
+            <p>• Handled prompt engineering across various applications.</p>
+            <p>• Optimized the size of docker container from 1.5Gb to 90Mb using multi stage build approach.</p>
+            <p>• Set up CI/CD pipelines using Dokku for automated deployment.</p>
+            <p>• Fine-tuned LLMs (e.g., Mistral, LLaMA 2) for specific use cases.</p>
+            <p>• Implemented workflow that triggers a new EC2 instance for various storefronts.</p>
+            <p>• Developed Sharove (E-Commerce) web application using Next.js 13.</p>
+          </div>
         </div>
-        <div className="bg-black/30 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-neutral-800">
-          <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Aiworks.ai (Software Engineer)</h3>
-          <p className="text-neutral-300 mb-4 text-sm sm:text-base leading-relaxed">
-            Developed Sharove (E-Commerce) with Next.js, integrated LLMs, built PoC for marketplace, and autonomous agents.
-          </p>
-          <span className="text-neutral-400 text-xs sm:text-sm">June 2023 – May 2024 (1 Year)</span>
-        </div>
+        <ExpandableCarousel 
+          images={[
+            {
+              src: "sharove.png",
+              alt: "AI agent routing system",
+              title: "AI Agent Routing System",
+              description: "Dynamic agent routing and orchestration tools with LLM integration to boost productivity for stakeholders and automated routine task management."
+            },
+            {
+              src: "sharove2.png",
+              alt: "Sharove e-commerce platform",
+              title: "Sharove E-Commerce Platform",
+              description: "Full-stack e-commerce web application built with Next.js 13, featuring marketplace experience improvements and automated workflow systems for various storefronts."
+            },
+            {
+              src: "sharove3.png",
+              alt: "LLM integration and fine-tuning",
+              title: "LLM Integration & Fine-tuning",
+              description: "Implemented RAG for product data retrieval from vector databases, handled prompt engineering across applications, and fine-tuned LLMs like Mistral and LLaMA 2 for specific use cases."
+            },
+            {
+              src: "sharove3.png",
+              alt: "CI/CD and Docker optimization",
+              title: "DevOps & Container Optimization",
+              description: "Optimized Docker container size from 1.5GB to 90MB using multi-stage build approach and set up CI/CD pipelines using Dokku for automated deployment."
+            }
+
+          ]}
+        />
       </div>
     ),
   },
   {
-    title: "2022 - 2023",
+    title: "Aug 2021 - July 2022",
     content: (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-        <div className="bg-black/30 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-neutral-800">
-          <h3 className="text-lg sm:text-xl font-bold text-white mb-2">NexAgent.ai (Subsidiary of Aiworks)</h3>
-          <p className="text-neutral-300 mb-4 text-sm sm:text-base leading-relaxed">
-            Engineered agent-based UIs, dynamic routing, RAG agent for e-commerce, LLM fine-tuning, prompt engineering, and CI/CD.
-          </p>
-          <span className="text-neutral-400 text-xs sm:text-sm">June 2023 – May 2024 (1 Year)</span>
+      <div>
+        <div className="bg-black/30 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-neutral-800 mb-6">
+          <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Aquila360 | Software Engineer</h3>
+          <p className="text-cyan-400 mb-4 text-sm font-semibold">Experience: 1 Year</p>
+          <div className="text-neutral-300 mb-4 text-sm sm:text-base leading-relaxed space-y-2">
+            <p>• Designed and configured multi-stage Azure Pipelines for automated build, test, and deployment processes.</p>
+            <p>• Implemented infrastructure as code (IaC) using ARM templates and YAML pipelines for consistent environment provisioning.</p>
+            <p>• Worked with Azure Cloud and set up CI/CD pipelines.</p>
+            <p>• Deployed apps using Docker, Kubernetes, and YAML-based configurations.</p>
+            <p>• Configured deployment slots and rolling updates for zero-downtime releases in Azure App Services.</p>
+            <p>• Deployed scheduled tasks for token refresh, notifications, and data synchronization.</p>
+            <p>• Designed and implemented a scalable dashboard architecture capable of executing and displaying 1000+ dynamic SQL queries as individual widgets across customizable dashboards.</p>
+          </div>
         </div>
-        <div className="bg-black/30 backdrop-blur-sm p-4 sm:p-6 rounded-lg border border-neutral-800">
-          <h3 className="text-lg sm:text-xl font-bold text-white mb-2">Cybernest (Software Engineer)</h3>
-          <p className="text-neutral-300 mb-4 text-sm sm:text-base leading-relaxed">
-            Refined HRM, built NFT marketplace, DEX, Hyperledger Fabric wallet, and contributed to YouSound.
-          </p>
-          <span className="text-neutral-400 text-xs sm:text-sm">Dec 2022 – May 2023 (6 Months)</span>
-        </div>
+
+        <ExpandableCarousel 
+          images={[
+            {
+              src: "aq.png",
+              alt: "Azure DevOps pipeline",
+              title: "Azure DevOps Pipeline",
+              description: "Multi-stage Azure Pipelines for automated build, test, and deployment processes with infrastructure as code using ARM templates and YAML pipelines for consistent environment provisioning."
+            },
+            {
+              src: "aq2.png",
+              alt: "Docker and Kubernetes",
+              title: "Multi-stage Azure Pipeline",
+              description: "Multi-stage Azure Pipeline for automated build, test, and deployment processes with infrastructure as code using ARM templates and YAML pipelines for consistent environment provisioning."
+            },
+            {
+              src: "aq3.png",
+              alt: "Infrastructure as Code",
+              title: "Kubernetes Deployment",
+              description: "Deployed applications using Docker, Kubernetes, and YAML-based configurations with deployment slots and rolling updates for zero-downtime releases in Azure App Services."
+            },
+            {
+              src: "aq4.png",
+              alt: "Scalable dashboard architecture",
+              title: "Azure ARM Template",
+              description: "Azure ARM Template for infrastructure as code using ARM templates and YAML pipelines for consistent environment provisioning."
+            }
+          ]}
+        />
       </div>
     ),
   },

@@ -327,7 +327,7 @@ const skillCategories = [
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
               >
-                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-cyan-400 mb-3 sm:mb-4 group-hover:text-cyan-300 transition-colors">3+</div>
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-cyan-400 mb-3 sm:mb-4 group-hover:text-cyan-300 transition-colors">4+</div>
                 <div className="text-white font-semibold text-base sm:text-lg mb-2 sm:mb-3">Years Experience</div>
                 <div className="text-neutral-400 leading-relaxed text-sm sm:text-base">Building scalable applications across multiple industries</div>
               </motion.div>
