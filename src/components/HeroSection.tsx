@@ -126,7 +126,7 @@ const HeroSection = () => {
             <a href="https://www.linkedin.com/in/shahzaib-rehman-1246591a6/" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
               <Button
                 borderRadius="1.75rem"
-                className="bg-[#0077B5] text-white border border-[#0077B5] hover:bg-[#0077B5]/90 hover:border-[#0077B5]/80 px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto"
+                className="bg-black text-white border border-neutral-800 hover:bg-black/90 hover:border-neutral-700 px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto"
               >
                 <div className={`${inter.className} flex items-center justify-center gap-2`}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
