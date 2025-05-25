@@ -113,7 +113,7 @@ const ContactSection = () => {
         </div>
             <p className="text-neutral-300 mb-4 sm:mb-6 md:mb-8 text-base sm:text-lg leading-relaxed">Let&apos;s connect professionally</p>
             <a 
-              href="https://linkedin.com/in/shahzaib-rehman"
+              href="https://www.linkedin.com/in/shahzaib-rehman-1246591a6/"
                         target="_blank" 
                         rel="noopener noreferrer" 
               className="text-blue-400 hover:text-blue-300 font-medium text-base sm:text-lg transition-colors"

@@ -123,7 +123,7 @@ const HeroSection = () => {
           </div>
           <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center w-full max-w-md sm:max-w-none">
             {/* LinkedIn Button */}
-            <a href="https://www.linkedin.com/in/shahzaibrehman/" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+            <a href="https://www.linkedin.com/in/shahzaib-rehman-1246591a6/" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
               <Button
                 borderRadius="1.75rem"
                 className="bg-[#0077B5] text-white border border-[#0077B5] hover:bg-[#0077B5]/90 hover:border-[#0077B5]/80 px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto"
