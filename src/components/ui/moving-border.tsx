@@ -8,7 +8,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useRef } from "react";
-import { cn } from "@/utils/cn";
+import { cn } from "@/lib/utils";
 
 export function Button({
   borderRadius = "1.75rem",
@@ -32,8 +32,8 @@ export function Button({
   return (
     <Component
       className={cn(
-        "bg-transparent relative text-xl  h-16 w-40 p-[1px] overflow-hidden ",
-        containerClassName
+        "relative h-16 w-40 overflow-hidden bg-transparent p-[1px] text-xl",
+        containerClassName,
       )}
       style={{
         borderRadius: borderRadius,
@@ -47,8 +47,8 @@ export function Button({
         <MovingBorder duration={duration} rx="30%" ry="30%">
           <div
             className={cn(
-              "h-20 w-20 opacity-[0.8] bg-[radial-gradient(var(--sky-500)_40%,transparent_60%)]",
-              borderClassName
+              "h-20 w-20 bg-[radial-gradient(#0ea5e9_40%,transparent_60%)] opacity-[0.8]",
+              borderClassName,
             )}
           />
         </MovingBorder>
@@ -56,8 +56,8 @@ export function Button({
 
       <div
         className={cn(
-          "relative bg-slate-900/[0.8] border border-slate-800 backdrop-blur-xl text-white flex items-center justify-center w-full h-full text-sm antialiased",
-          className
+          "relative flex h-full w-full items-center justify-center border border-slate-800 bg-slate-900/[0.8] text-sm text-white antialiased backdrop-blur-xl",
+          className,
         )}
         style={{
           borderRadius: `calc(${borderRadius} * 0.96)`,
@@ -71,7 +71,7 @@ export function Button({
 
 export const MovingBorder = ({
   children,
-  duration = 2000,
+  duration = 3000,
   rx,
   ry,
   ...otherProps
@@ -86,20 +86,44 @@ export const MovingBorder = ({
   const progress = useMotionValue<number>(0);
 
   useAnimationFrame((time) => {
-    const length = pathRef.current?.getTotalLength();
-    if (length) {
-      const pxPerMillisecond = length / duration;
-      progress.set((time * pxPerMillisecond) % length);
+    if (pathRef.current && pathRef.current.getTotalLength) {
+      try {
+        const length = pathRef.current.getTotalLength();
+        if (length) {
+          const pxPerMillisecond = length / duration;
+          progress.set((time * pxPerMillisecond) % length);
+        }
+      } catch (error) {
+        // Element not ready yet, skip this frame
+      }
     }
   });
 
   const x = useTransform(
     progress,
-    (val) => pathRef.current?.getPointAtLength(val).x
+    (val) => {
+      if (pathRef.current && pathRef.current.getPointAtLength) {
+        try {
+          return pathRef.current.getPointAtLength(val).x;
+        } catch (error) {
+          return 0;
+        }
+      }
+      return 0;
+    },
   );
   const y = useTransform(
     progress,
-    (val) => pathRef.current?.getPointAtLength(val).y
+    (val) => {
+      if (pathRef.current && pathRef.current.getPointAtLength) {
+        try {
+          return pathRef.current.getPointAtLength(val).y;
+        } catch (error) {
+          return 0;
+        }
+      }
+      return 0;
+    },
   );
 
   const transform = useMotionTemplate`translateX(${x}px) translateY(${y}px) translateX(-50%) translateY(-50%)`;
