@@ -11,7 +11,7 @@ export default function Home() {
       <HeroSection />
       <AboutSection />
       <ExperienceSection />
-      <SkillsSection />
+      {/* <SkillsSection /> */}
       <ContactSection />
     </div>
   );
