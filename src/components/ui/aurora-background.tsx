@@ -1,71 +1,102 @@
 "use client";
-import { cn } from "@/utils/cn";
-import React, { ReactNode } from "react";
 
-interface AuroraBackgroundProps extends React.HTMLProps<HTMLDivElement> {
-  children: ReactNode;
-  showRadialGradient?: boolean;
+import React from "react";
+import { cn } from "@/lib/utils";
+
+type AuroraVariant = "cyan-purple" | "emerald-teal" | "violet-blue" | "amber-rose" | "indigo-cyan";
+
+const variantStyles: Record<
+  AuroraVariant,
+  { gradient: string; dotColor?: string; gridMask?: string }
+> = {
+  "cyan-purple": {
+    gradient:
+      "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(6, 182, 212, 0.22), transparent 50%), radial-gradient(ellipse 60% 40% at 100% 50%, rgba(139, 92, 246, 0.14), transparent 50%), radial-gradient(ellipse 50% 30% at 0% 80%, rgba(59, 130, 246, 0.1), transparent 50%)",
+    dotColor: "rgba(255,255,255)",
+    gridMask: "radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 100%)",
+  },
+  "emerald-teal": {
+    gradient:
+      "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(16, 185, 129, 0.16), transparent 50%), radial-gradient(ellipse 50% 40% at 80% 100%, rgba(6, 182, 212, 0.1), transparent 50%), radial-gradient(ellipse 40% 30% at 20% 50%, rgba(34, 197, 94, 0.06), transparent 50%)",
+    dotColor: "rgba(255,255,255)",
+    gridMask: "radial-gradient(ellipse 80% 70% at 50% 50%, black 25%, transparent 100%)",
+  },
+  "violet-blue": {
+    gradient:
+      "radial-gradient(ellipse 80% 50% at 70% 20%, rgba(139, 92, 246, 0.18), transparent 50%), radial-gradient(ellipse 60% 40% at 30% 80%, rgba(59, 130, 246, 0.12), transparent 50%), radial-gradient(ellipse 50% 35% at 50% 50%, rgba(99, 102, 241, 0.06), transparent 50%)",
+    dotColor: "rgba(255,255,255)",
+    gridMask: "radial-gradient(ellipse 75% 55% at 50% 45%, black 30%, transparent 100%)",
+  },
+  "amber-rose": {
+    gradient:
+      "radial-gradient(ellipse 70% 50% at 30% 30%, rgba(245, 158, 11, 0.1), transparent 50%), radial-gradient(ellipse 50% 40% at 80% 70%, rgba(244, 63, 94, 0.08), transparent 50%), radial-gradient(ellipse 45% 35% at 50% 50%, rgba(251, 146, 60, 0.05), transparent 50%)",
+    dotColor: "rgba(255,255,255)",
+    gridMask: "radial-gradient(ellipse 70% 60% at 50% 50%, black 20%, transparent 100%)",
+  },
+  "indigo-cyan": {
+    gradient:
+      "radial-gradient(ellipse 80% 50% at 50% 50%, rgba(99, 102, 241, 0.1), transparent 50%), radial-gradient(ellipse 60% 40% at 20% 80%, rgba(6, 182, 212, 0.08), transparent 50%), radial-gradient(ellipse 50% 35% at 80% 20%, rgba(139, 92, 246, 0.06), transparent 50%)",
+    dotColor: "rgba(255,255,255)",
+    gridMask: "radial-gradient(ellipse 65% 55% at 50% 50%, black 25%, transparent 100%)",
+  },
+};
+
+interface AuroraBackgroundProps {
+  variant?: AuroraVariant;
+  className?: string;
+  animated?: boolean;
+  showDotGrid?: boolean;
+  showLineGrid?: boolean;
+  children?: React.ReactNode;
 }
 
-export const AuroraBackground = ({
+export function AuroraBackground({
+  variant = "cyan-purple",
   className,
+  animated = true,
+  showDotGrid = true,
+  showLineGrid = true,
   children,
-  showRadialGradient = true,
-  ...props
-}: AuroraBackgroundProps) => {
+}: AuroraBackgroundProps) {
+  const style = variantStyles[variant];
+
   return (
-    <div className="w-full h-full">
+    <div className={cn("absolute inset-0 overflow-hidden pointer-events-none", className)}>
+      {/* Animated aurora mesh - 21st.dev hero style */}
       <div
-        className={cn(
-          "relative flex h-[100vh] flex-col items-center justify-center bg-black",
-          className,
-        )}
-        {...props}
-      >
+        className={cn("absolute inset-0", animated && "aurora-mesh")}
+        style={{
+          background: style.gradient,
+          backgroundSize: animated ? "200% 200%" : "100% 100%",
+        }}
+      />
+      {/* Dot grid pattern */}
+      {showDotGrid && (
         <div
-          className="absolute inset-0 overflow-hidden"
-          style={
-            {
-              "--aurora":
-                "repeating-linear-gradient(100deg,#3b82f6_10%,#a5b4fc_15%,#93c5fd_20%,#ddd6fe_25%,#60a5fa_30%)",
-              "--dark-gradient":
-                "repeating-linear-gradient(100deg,#000_0%,#000_7%,transparent_10%,transparent_12%,#000_16%)",
-
-              "--blue-300": "#93c5fd",
-              "--blue-400": "#60a5fa",
-              "--blue-500": "#3b82f6",
-              "--indigo-300": "#a5b4fc",
-              "--violet-200": "#ddd6fe",
-              "--black": "#000",
-              "--transparent": "transparent",
-            } as React.CSSProperties
-          }
-        >
-          <div
-            className={cn(
-              `after:animate-aurora pointer-events-none absolute -inset-[10px] 
-              [background-image:var(--dark-gradient),var(--aurora)] 
-              [background-size:300%,_200%] 
-              [background-position:50%_50%,50%_50%] 
-              opacity-40 
-              blur-[10px] 
-              will-change-transform 
-              [--aurora:repeating-linear-gradient(100deg,var(--blue-500)_10%,var(--indigo-300)_15%,var(--blue-300)_20%,var(--violet-200)_25%,var(--blue-400)_30%)] 
-              [--dark-gradient:repeating-linear-gradient(100deg,var(--black)_0%,var(--black)_7%,var(--transparent)_10%,var(--transparent)_12%,var(--black)_16%)] 
-              after:absolute 
-              after:inset-0 
-              after:[background-image:var(--dark-gradient),var(--aurora)] 
-              after:[background-size:200%,_100%] 
-              after:[background-attachment:fixed] 
-              after:content-[""]`,
-
-              showRadialGradient &&
-                `[mask-image:radial-gradient(ellipse_at_100%_0%,black_20%,var(--transparent)_70%)]`,
-            )}
-          ></div>
-        </div>
-        {children}
-      </div>
+          className="absolute inset-0 opacity-[0.25]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, ${style.dotColor} 1px, transparent 0)`,
+            backgroundSize: "24px 24px",
+            maskImage: style.gridMask,
+            WebkitMaskImage: style.gridMask,
+          }}
+        />
+      )}
+      {/* Line grid */}
+      {showLineGrid && (
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(255,255,255,0.5) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,0.5) 1px, transparent 1px)
+            `,
+            backgroundSize: "48px 48px",
+            maskImage: style.gridMask,
+            WebkitMaskImage: style.gridMask,
+          }}
+        />
+      )}
     </div>
   );
-};
+}

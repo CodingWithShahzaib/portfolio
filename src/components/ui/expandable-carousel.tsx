@@ -67,29 +67,14 @@ export function ExpandableCarousel({ images }: ExpandableCarouselProps) {
 
     if (active && typeof active === "object") {
       document.body.style.overflow = "hidden";
-      // Hide navbar when image is opened
-      const navbar = document.querySelector('div[class*="fixed"][class*="top-"][class*="z-50"]') as HTMLElement;
-      if (navbar) {
-        navbar.style.display = "none";
-      }
     } else {
       document.body.style.overflow = "auto";
-      // Show navbar when image is closed
-      const navbar = document.querySelector('div[class*="fixed"][class*="top-"][class*="z-50"]') as HTMLElement;
-      if (navbar) {
-        navbar.style.display = "block";
-      }
     }
 
     window.addEventListener("keydown", onKeyDown);
     return () => {
       window.removeEventListener("keydown", onKeyDown);
-      // Ensure navbar is visible when component unmounts
       document.body.style.overflow = "auto";
-      const navbar = document.querySelector('div[class*="fixed"][class*="top-"][class*="z-50"]') as HTMLElement;
-      if (navbar) {
-        navbar.style.display = "block";
-      }
     };
   }, [active]);
 

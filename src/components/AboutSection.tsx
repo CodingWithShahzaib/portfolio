@@ -1,238 +1,177 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { ContainerScroll } from "@/components/ui/container-scroll-animation";
-import { motion, useInView } from "framer-motion";
-import { BackgroundGradient } from "@/components/ui/background-gradient";
-import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import React, { useRef } from "react";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { AuroraBackground } from "@/components/ui/aurora-background";
+import { Sparkles, Users, Lightbulb, Target, Rocket, Heart } from "lucide-react";
+
+const bentoItems = [
+  {
+    title: "Growth Mindset",
+    description:
+      "Every challenge is an opportunity to learn something new and push boundaries further.",
+    icon: Rocket,
+    gradient: "from-cyan-500/20 via-cyan-500/5 to-transparent",
+    border: "group-hover:border-cyan-500/30",
+    glow: "group-hover:shadow-[0_0_40px_rgba(6,182,212,0.1)]",
+    iconColor: "text-cyan-400",
+    iconBg: "bg-cyan-500/10",
+    className: "md:col-span-2 md:row-span-1",
+  },
+  {
+    title: "Team Player",
+    description:
+      "Great software is built by great teams. I thrive in collaborative environments.",
+    icon: Users,
+    gradient: "from-purple-500/20 via-purple-500/5 to-transparent",
+    border: "group-hover:border-purple-500/30",
+    glow: "group-hover:shadow-[0_0_40px_rgba(139,92,246,0.1)]",
+    iconColor: "text-purple-400",
+    iconBg: "bg-purple-500/10",
+    className: "md:col-span-1 md:row-span-2",
+  },
+  {
+    title: "Creative Problem Solver",
+    description:
+      "Finding innovative solutions that surprise and delight users.",
+    icon: Lightbulb,
+    gradient: "from-amber-500/15 via-amber-500/5 to-transparent",
+    border: "group-hover:border-amber-500/30",
+    glow: "group-hover:shadow-[0_0_40px_rgba(245,158,11,0.08)]",
+    iconColor: "text-amber-400",
+    iconBg: "bg-amber-500/10",
+    className: "md:col-span-1 md:row-span-1",
+  },
+  {
+    title: "Detail Oriented",
+    description:
+      "Pixel-perfect UI, clean architecture, and thoughtful code reviews.",
+    icon: Target,
+    gradient: "from-emerald-500/20 via-emerald-500/5 to-transparent",
+    border: "group-hover:border-emerald-500/30",
+    glow: "group-hover:shadow-[0_0_40px_rgba(16,185,129,0.1)]",
+    iconColor: "text-emerald-400",
+    iconBg: "bg-emerald-500/10",
+    className: "md:col-span-1 md:row-span-1",
+  },
+  {
+    title: "Passionate Builder",
+    description:
+      "Driven by the joy of creating software that makes a real difference in the world.",
+    icon: Heart,
+    gradient: "from-rose-500/20 via-rose-500/5 to-transparent",
+    border: "group-hover:border-rose-500/30",
+    glow: "group-hover:shadow-[0_0_40px_rgba(244,63,94,0.1)]",
+    iconColor: "text-rose-400",
+    iconBg: "bg-rose-500/10",
+    className: "md:col-span-2 md:row-span-1",
+  },
+];
 
 const AboutSection = () => {
-  const [animationKey, setAnimationKey] = useState(0);
-  const [prevScrollY, setPrevScrollY] = useState(0);
-  const [scrollingDown, setScrollingDown] = useState(true);
-  const [hasAnimatedEver, setHasAnimatedEver] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const ref = React.useRef(null);
-  const isInView = useInView(ref, {
-    once: false,
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.15 });
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
   });
-
-  // Check if we're on mobile and if we've already animated in this session
-  useEffect(() => {
-    // Check if we're on mobile
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
-    // Check animation state
-    try {
-      const hasAnimated =
-        sessionStorage.getItem("aboutSectionAnimated") === "true";
-      setHasAnimatedEver(hasAnimated);
-    } catch (e) {
-      console.error("Session storage not available:", e);
-    }
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-    };
-  }, []);
-
-  // Track scroll direction with throttling for better performance
-  useEffect(() => {
-    let ticking = false;
-
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-
-          if (currentScrollY > prevScrollY) {
-            setScrollingDown(true);
-          } else {
-            setScrollingDown(false);
-          }
-
-          setPrevScrollY(currentScrollY);
-          ticking = false;
-        });
-
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    // Add touch move event for mobile with throttling
-    let touchTicking = false;
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!touchTicking && e.touches && e.touches.length) {
-        requestAnimationFrame(() => {
-          const currentY = e.touches[0].clientY;
-          if (currentY < prevScrollY) {
-            setScrollingDown(true);
-          } else {
-            setScrollingDown(false);
-          }
-          setPrevScrollY(currentY);
-          touchTicking = false;
-        });
-
-        touchTicking = true;
-      }
-    };
-
-    window.addEventListener("touchmove", handleTouchMove, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("touchmove", handleTouchMove);
-    };
-  }, [prevScrollY]);
-
-  // Trigger animation only once when scrolling down from hero section
-  useEffect(() => {
-    if (isInView && scrollingDown && !hasAnimatedEver) {
-      setAnimationKey((prev) => prev + 1);
-      setHasAnimatedEver(true);
-      // Save animation state to session storage
-      try {
-        sessionStorage.setItem("aboutSectionAnimated", "true");
-      } catch (e) {
-        console.error("Session storage not available:", e);
-      }
-    }
-  }, [isInView, scrollingDown, hasAnimatedEver]);
+  const bgY = useTransform(scrollYProgress, [0, 1], [0, -80]);
 
   return (
     <section
       id="about"
-      className="relative w-full bg-gradient-to-b from-black via-neutral-950 to-black overflow-hidden"
+      ref={containerRef}
+      className="relative w-full py-28 sm:py-36 bg-black overflow-hidden"
     >
-      {/* Aurora-like background effects transitioning from hero with optimized performance */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-green-900/20 to-black"></div>
+      {/* 21st.dev-style aurora background */}
+      <motion.div style={{ y: bgY }} className="absolute inset-0">
+        <AuroraBackground variant="emerald-teal" showDotGrid showLineGrid />
+      </motion.div>
 
-      {/* Aurora orbs with reduced movements for better scroll performance - constrained within viewport */}
-      <motion.div
-        className="absolute -top-20 right-1/4 w-64 sm:w-80 md:w-96 h-64 sm:h-80 md:h-96 bg-gradient-to-br from-green-400/30 via-blue-400/20 to-transparent rounded-full blur-3xl will-change-transform"
-        animate={{
-          x: [0, 15, 0],
-          y: [0, -10, 0],
-          scale: [1, 1.03, 1],
-          opacity: [0.6, 0.7, 0.6],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-      <motion.div
-        className="absolute top-1/3 left-1/5 w-56 sm:w-72 md:w-80 h-56 sm:h-72 md:h-80 bg-gradient-to-tr from-blue-400/25 via-green-400/15 to-transparent rounded-full blur-3xl will-change-transform"
-        animate={{
-          x: [0, -10, 0],
-          y: [0, 10, 0],
-          scale: [1, 0.97, 1],
-          opacity: [0.4, 0.6, 0.4],
-        }}
-        transition={{
-          duration: 10,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 2,
-        }}
-      />
-      <motion.div
-        className="absolute bottom-10 right-1/3 w-48 sm:w-64 md:w-72 h-48 sm:h-64 md:h-72 bg-gradient-to-tl from-emerald-400/20 via-cyan-400/15 to-transparent rounded-full blur-3xl will-change-transform"
-        animate={{
-          x: [0, 8, 0],
-          y: [0, -5, 0],
-          scale: [1, 1.01, 1],
-          opacity: [0.5, 0.55, 0.5],
-        }}
-        transition={{
-          duration: 12,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 4,
-        }}
-      />
-
-      {/* Connecting gradient fade from aurora to section content */}
-      <div className="absolute top-0 left-0 right-0 h-24 sm:h-32 bg-gradient-to-b from-black/20 via-transparent to-transparent"></div>
-
-      <div className="relative z-10 w-full">
-        <ContainerScroll
-          titleComponent={
-            <motion.div
-              ref={ref}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="text-center w-full px-4 md:px-8 mb-12 md:mb-16"
-            >
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-6 md:mb-8">
-                My Journey
-              </h2>
-              <TextGenerateEffect
-                key={animationKey}
-                words="From curious beginner to senior engineer - discover the story behind the code, the passion that drives innovation, and the vision that shapes the future."
-                className="font-normal text-sm sm:text-base md:text-lg lg:text-xl text-neutral-300 max-w-2xl md:max-w-4xl mx-auto leading-relaxed"
-                filter={true}
-                duration={isMobile ? 0.5 : 0.7}
-              />
-            </motion.div>
-          }
-          className="bg-transparent"
+      <div ref={ref} className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
+        {/* Section heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16 sm:mb-20"
         >
-          <BackgroundGradient
-            className="w-full h-full rounded-[22px] p-4 md:p-6 bg-black/80 backdrop-blur-sm"
-            containerClassName="w-full h-full"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/[0.05] text-xs font-medium text-cyan-300/80 mb-8"
           >
-            <div className="w-full h-full overflow-hidden flex flex-col justify-center items-center p-6 sm:p-8 md:p-10 space-y-8 sm:space-y-10 md:space-y-12">
-              {/* Personal Insights */}
-              <div className="bg-gradient-to-br from-neutral-900/60 to-neutral-900/30 rounded-xl p-6 sm:p-8 border border-neutral-700 backdrop-blur-sm max-w-6xl mx-auto w-full">
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-white mb-8 text-center">
-                  Beyond the Code 🚀
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-                  <div className="text-center">
-                    <div className="text-3xl sm:text-4xl mb-4">🌱</div>
-                    <h4 className="text-lg sm:text-xl font-medium text-white mb-3">
-                      Growth Mindset
-                    </h4>
-                    <p className="text-sm text-neutral-400 leading-relaxed">
-                      I believe every challenge is an opportunity to learn
-                      something new and push boundaries.
-                    </p>
+            <Sparkles size={12} />
+            Beyond the Code
+          </motion.div>
+          <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
+            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-neutral-600">
+              My Journey
+            </span>
+          </h2>
+          <p className="text-neutral-500 text-sm sm:text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+            From curious beginner to senior engineer — the passion that drives
+            innovation and shapes the future.
+          </p>
+        </motion.div>
+
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 auto-rows-auto">
+          {bentoItems.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                animate={
+                  isInView ? { opacity: 1, y: 0, scale: 1 } : {}
+                }
+                transition={{
+                  duration: 0.7,
+                  delay: index * 0.1,
+                  ease: [0.25, 0.4, 0.25, 1],
+                }}
+                className={cn(
+                  "group relative rounded-2xl border border-white/[0.06] bg-white/[0.015] p-6 sm:p-8 transition-all duration-700 cursor-default overflow-hidden",
+                  item.border,
+                  item.glow,
+                  item.className
+                )}
+              >
+                {/* Hover gradient */}
+                <div
+                  className={cn(
+                    "absolute inset-0 rounded-2xl bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-700",
+                    item.gradient
+                  )}
+                />
+
+                {/* Corner accent */}
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-white/[0.02] to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                <div className="relative z-10">
+                  <div
+                    className={cn(
+                      "w-12 h-12 rounded-2xl flex items-center justify-center mb-5 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3",
+                      item.iconColor,
+                      item.iconBg
+                    )}
+                  >
+                    <Icon size={22} strokeWidth={1.5} />
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl sm:text-4xl mb-4">🤝</div>
-                    <h4 className="text-lg sm:text-xl font-medium text-white mb-3">
-                      Team Player
-                    </h4>
-                    <p className="text-sm text-neutral-400 leading-relaxed">
-                      Great software is built by great teams. I thrive in
-                      collaborative environments.
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-3xl sm:text-4xl mb-4">🎨</div>
-                    <h4 className="text-lg sm:text-xl font-medium text-white mb-3">
-                      Creative Problem Solver
-                    </h4>
-                    <p className="text-sm text-neutral-400 leading-relaxed">
-                      I love finding innovative solutions that surprise and
-                      delight users.
-                    </p>
-                  </div>
+                  <h3 className="font-heading text-lg sm:text-xl font-semibold text-white mb-2 group-hover:text-white transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-neutral-500 leading-relaxed group-hover:text-neutral-400 transition-colors duration-500">
+                    {item.description}
+                  </p>
                 </div>
-              </div>
-            </div>
-          </BackgroundGradient>
-        </ContainerScroll>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
