@@ -1,265 +1,268 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
-import { motion, useInView } from "framer-motion";
+import React, { useRef, useCallback } from "react";
+import { motion, useInView, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { 
-  Mail, 
-  Phone, 
-  Github, 
-  Linkedin, 
-  MessageCircle, 
-  Zap 
-} from "lucide-react";
+import { AuroraBackground } from "@/components/ui/aurora-background";
+import { Mail, Phone, Github, Linkedin, MessageCircle, ArrowUpRight } from "lucide-react";
+
+const contactCards = [
+  {
+    title: "Email",
+    icon: Mail,
+    description: "Let's discuss your project",
+    contact: "shahzaibrehman40@gmail.com",
+    href: "mailto:shahzaibrehman40@gmail.com",
+    status: "Responds within 24h",
+    gradient: "from-blue-500/20 via-blue-500/5 to-transparent",
+    iconColor: "text-blue-400",
+    iconBg: "bg-blue-500/10",
+    borderHover: "hover:border-blue-500/30",
+    glowHover: "hover:shadow-[0_0_40px_rgba(59,130,246,0.1)]",
+  },
+  {
+    title: "Phone",
+    icon: Phone,
+    description: "Call for immediate discussion",
+    contact: "+92 313 476 6457",
+    href: "tel:+923134766457",
+    status: "Mon-Fri, 9 AM - 6 PM PKT",
+    gradient: "from-cyan-500/20 via-cyan-500/5 to-transparent",
+    iconColor: "text-cyan-400",
+    iconBg: "bg-cyan-500/10",
+    borderHover: "hover:border-cyan-500/30",
+    glowHover: "hover:shadow-[0_0_40px_rgba(6,182,212,0.1)]",
+  },
+  {
+    title: "GitHub",
+    icon: Github,
+    description: "Explore my code & projects",
+    contact: "@CodingWithShahzaib",
+    href: "https://github.com/CodingWithShahzaib",
+    status: "50+ repositories",
+    gradient: "from-purple-500/20 via-purple-500/5 to-transparent",
+    iconColor: "text-purple-400",
+    iconBg: "bg-purple-500/10",
+    borderHover: "hover:border-purple-500/30",
+    glowHover: "hover:shadow-[0_0_40px_rgba(139,92,246,0.1)]",
+  },
+  {
+    title: "LinkedIn",
+    icon: Linkedin,
+    description: "Let's connect professionally",
+    contact: "/in/shahzaib-rehman",
+    href: "https://www.linkedin.com/in/shahzaib-rehman-1246591a6/",
+    status: "500+ connections",
+    gradient: "from-indigo-500/20 via-indigo-500/5 to-transparent",
+    iconColor: "text-indigo-400",
+    iconBg: "bg-indigo-500/10",
+    borderHover: "hover:border-indigo-500/30",
+    glowHover: "hover:shadow-[0_0_40px_rgba(99,102,241,0.1)]",
+  },
+];
+
+function MagneticCard({
+  card,
+  index,
+  isInView,
+}: {
+  card: (typeof contactCards)[0];
+  index: number;
+  isInView: boolean;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const rotateXRaw = useTransform(mouseY, [-0.5, 0.5], [8, -8]);
+  const rotateYRaw = useTransform(mouseX, [-0.5, 0.5], [-8, 8]);
+  const rotateX = useSpring(rotateXRaw, { stiffness: 200, damping: 20 });
+  const rotateY = useSpring(rotateYRaw, { stiffness: 200, damping: 20 });
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (!cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+      mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+    },
+    [mouseX, mouseY]
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    mouseX.set(0);
+    mouseY.set(0);
+  }, [mouseX, mouseY]);
+
+  const Icon = card.icon;
+  const isExternal = card.href.startsWith("http");
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50, scale: 0.9 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+      transition={{
+        duration: 0.7,
+        delay: index * 0.12 + 0.2,
+        ease: [0.25, 0.4, 0.25, 1],
+      }}
+    >
+      <a
+        href={card.href}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+      >
+        <motion.div
+          ref={cardRef}
+          style={{ rotateX, rotateY, transformPerspective: 800 }}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          className={cn(
+            "group relative rounded-2xl border border-white/[0.06] bg-white/[0.015] p-7 sm:p-8 transition-all duration-700 cursor-pointer overflow-hidden",
+            card.borderHover,
+            card.glowHover
+          )}
+        >
+          {/* Hover gradient */}
+          <div
+            className={cn(
+              "absolute inset-0 rounded-2xl bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-700",
+              card.gradient
+            )}
+          />
+          {/* Corner accent */}
+          <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-white/[0.02] to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+          <div className="relative z-10">
+            <div className="flex items-start justify-between mb-5">
+              <div
+                className={cn(
+                  "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-3",
+                  card.iconColor,
+                  card.iconBg
+                )}
+              >
+                <Icon size={22} strokeWidth={1.5} />
+              </div>
+              <ArrowUpRight
+                size={18}
+                className="text-neutral-700 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300"
+              />
+            </div>
+
+            <h3 className="font-heading text-xl font-semibold text-white mb-1.5">
+              {card.title}
+            </h3>
+            <p className="text-sm text-neutral-600 mb-5">{card.description}</p>
+
+            <p
+              className={cn(
+                "text-sm font-medium mb-5 transition-colors duration-300",
+                card.iconColor
+              )}
+            >
+              {card.contact}
+            </p>
+
+            <div className="flex items-center gap-2.5 pt-4 border-t border-white/[0.04]">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
+              </span>
+              <span className="text-xs text-neutral-600 group-hover:text-neutral-400 transition-colors">
+                {card.status}
+              </span>
+            </div>
+          </div>
+        </motion.div>
+      </a>
+    </motion.div>
+  );
+}
 
 const ContactSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
-  const [hasAnimated, setHasAnimated] = useState(false);
-
-  useEffect(() => {
-    if (isInView && !hasAnimated) {
-      setHasAnimated(true);
-    }
-  }, [isInView, hasAnimated]);
-
-  const contactCards = [
-    {
-      id: 1,
-      title: "Email",
-      icon: Mail,
-      description: "Let's discuss your project via email",
-      contact: "shahzaibrehman40@gmail.com",
-      href: "mailto:shahzaibrehman40@gmail.com",
-      status: "Usually responds within 24h",
-      color: "text-blue-400 hover:text-blue-300",
-      iconColor: "text-blue-400 group-hover:text-blue-300",
-      className: "md:col-span-1 md:row-span-1"
-    },
-    {
-      id: 2,
-      title: "Phone",
-      icon: Phone,
-      description: "Call me for immediate discussion",
-      contact: "+92 313 476 6457",
-      href: "tel:+923134766457",
-      status: "Available Mon-Fri, 9 AM - 6 PM PKT",
-      color: "text-cyan-400 hover:text-cyan-300",
-      iconColor: "text-cyan-400 group-hover:text-cyan-300",
-      className: "md:col-span-1 md:row-span-1"
-    },
-    {
-      id: 3,
-      title: "GitHub",
-      icon: Github,
-      description: "Explore my code and projects",
-      contact: "@CodingWithShahzaib",
-      href: "https://github.com/CodingWithShahzaib",
-      status: "50+ repositories • 500+ contributions",
-      color: "text-purple-400 hover:text-purple-300",
-      iconColor: "text-purple-400 group-hover:text-purple-300",
-      className: "md:col-span-1 md:row-span-1"
-    },
-    {
-      id: 4,
-      title: "LinkedIn",
-      icon: Linkedin,
-      description: "Let's connect professionally",
-      contact: "/in/shahzaib-rehman",
-      href: "https://www.linkedin.com/in/shahzaib-rehman-1246591a6/",
-      status: "500+ connections • Tech Industry",
-      color: "text-blue-400 hover:text-blue-300",
-      iconColor: "text-blue-400 group-hover:text-blue-300",
-      className: "md:col-span-1 md:row-span-1"
-    }
-  ];
 
   return (
-    <section ref={ref} id="contact" className="h-screen relative overflow-hidden bg-gradient-to-b from-black via-neutral-950 to-black flex flex-col">
-      {/* Enhanced aurora-like background for glassmorphism effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-900/20 via-cyan-900/10 to-indigo-900/20"></div>
-      
-      {/* Connecting gradient from SkillsSection */}
-      <div className="absolute top-0 left-0 right-0 h-8 sm:h-12 md:h-16 lg:h-20 xl:h-24 bg-gradient-to-b from-cyan-900/10 via-slate-900/10 to-transparent"></div>
-      
-      {/* Enhanced aurora orbs for glassmorphism background */}
-      <motion.div 
-        className="absolute top-12 left-1/3 w-16 sm:w-24 md:w-32 lg:w-48 xl:w-64 2xl:w-80 h-16 sm:h-24 md:h-32 lg:h-48 xl:h-64 2xl:h-80 bg-gradient-to-br from-violet-500/30 via-cyan-500/20 to-transparent rounded-full blur-3xl will-change-transform"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={hasAnimated ? {
-          opacity: [0.4, 0.7, 0.4],
-          scale: [1, 1.05, 1],
-          x: [0, 15, 0],
-          y: [0, -10, 0],
-        } : { opacity: 0, scale: 0.8 }}
-        transition={{
-          duration: 16,
-          repeat: hasAnimated ? Infinity : 0,
-          ease: "easeInOut"
-        }}
-      />
-      <motion.div 
-        className="absolute bottom-1/5 right-1/4 w-14 sm:w-20 md:w-28 lg:w-40 xl:w-56 2xl:w-72 h-14 sm:h-20 md:h-28 lg:h-40 xl:h-56 2xl:h-72 bg-gradient-to-tl from-indigo-500/25 via-purple-500/15 to-transparent rounded-full blur-3xl will-change-transform"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={hasAnimated ? {
-          opacity: [0.3, 0.6, 0.3],
-          scale: [1, 0.95, 1],
-          x: [0, -12, 0],
-          y: [0, 8, 0],
-        } : { opacity: 0, scale: 0.8 }}
-        transition={{
-          duration: 18,
-          repeat: hasAnimated ? Infinity : 0,
-          ease: "easeInOut",
-          delay: hasAnimated ? 3 : 0
-        }}
-      />
-      
-      <motion.div 
-        className="absolute top-1/2 left-1/6 w-12 sm:w-16 md:w-24 lg:w-32 xl:w-40 2xl:w-48 h-12 sm:h-16 md:h-24 lg:h-32 xl:h-40 2xl:h-48 bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-transparent rounded-full blur-2xl will-change-transform"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={hasAnimated ? {
-          opacity: [0.2, 0.4, 0.2],
-          scale: [1, 1.08, 1],
-          x: [0, 8, 0],
-          y: [0, -6, 0],
-        } : { opacity: 0, scale: 0.8 }}
-        transition={{
-          duration: 14,
-          repeat: hasAnimated ? Infinity : 0,
-          ease: "easeInOut",
-          delay: hasAnimated ? 1.5 : 0
-        }}
-      />
-      
-      {/* Subtle grid pattern for depth */}
-      <div className="absolute inset-0 opacity-5 sm:opacity-10 md:opacity-15">
-        <div
-          className={cn(
-            "absolute inset-0",
-            "[background-size:60px_60px]",
-            "[background-image:linear-gradient(to_right,rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.1)_1px,transparent_1px)]",
-          )}
-        />
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/50 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-      </div>
+    <section
+      ref={ref}
+      id="contact"
+      className="relative min-h-screen bg-black overflow-hidden flex flex-col"
+    >
+      {/* 21st.dev-style aurora background */}
+      <AuroraBackground variant="indigo-cyan" showDotGrid showLineGrid />
 
-      <div className="relative z-10 flex flex-col h-full py-2 sm:py-4 md:py-6 lg:py-8 xl:py-12">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 50 }}
-          animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-3 sm:mb-4 md:mb-6 lg:mb-8 xl:mb-12 px-3 sm:px-4 flex-shrink-0"
-        >
-          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-bold bg-gradient-to-b from-white to-neutral-400 bg-clip-text text-transparent mb-1 sm:mb-2 md:mb-3 lg:mb-4 xl:mb-6">
-            Get In Touch
-          </h2>
-          <p className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-neutral-300 max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto leading-relaxed">
-            Ready to start your next project? Choose your preferred way to connect with me.
-          </p>
-        </motion.div>
+      {/* Horizontal accent line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent z-10" />
 
-        {/* Glassmorphism Contact Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={hasAnimated ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex-1 flex items-center justify-center px-2 sm:px-3 md:px-4"
-        >
-          <div className="w-full max-w-4xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:gap-6 xl:gap-8">
-              {contactCards.map((card, index) => {
-                const IconComponent = card.icon;
-                return (
-                  <motion.div
-                    key={card.id}
-                    initial={{ opacity: 0, scale: 0.9, y: 50 }}
-                    animate={hasAnimated ? { 
-                      opacity: 1, 
-                      scale: 1, 
-                      y: 0 
-                    } : { 
-                      opacity: 0, 
-                      scale: 0.9, 
-                      y: 50 
-                    }}
-                    transition={{ 
-                      duration: 0.7, 
-                      delay: hasAnimated ? index * 0.1 + 0.3 : 0,
-                      ease: [0.25, 0.46, 0.45, 0.94]
-                    }}
-                    className="group"
-                  >
-                    <div className="relative h-full">
-                      {/* Glassmorphism Card */}
-                      <div className="relative h-full p-3 sm:p-4 md:p-5 lg:p-6 xl:p-8 rounded-lg sm:rounded-xl md:rounded-2xl backdrop-blur-xl bg-white/[0.05] border border-white/[0.1] shadow-2xl transition-all duration-500 group-hover:bg-white/[0.08] group-hover:border-white/[0.2] group-hover:shadow-3xl group-hover:scale-[1.02] min-h-[140px] sm:min-h-[160px] md:min-h-[200px] lg:min-h-[240px] xl:min-h-[280px]">
-                        
-                        {/* Gradient overlay for depth */}
-                        <div className="absolute inset-0 rounded-lg sm:rounded-xl md:rounded-2xl bg-gradient-to-br from-white/[0.1] via-transparent to-transparent opacity-50 group-hover:opacity-70 transition-opacity duration-500"></div>
-                        
-                        {/* Subtle inner glow */}
-                        <div className="absolute inset-[1px] rounded-lg sm:rounded-xl md:rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent"></div>
-                        
-                        {/* Content */}
-                        <div className="relative z-10 h-full flex flex-col justify-between">
-                          <div>
-                            {/* Icon and Title */}
-                            <div className="flex items-center gap-2 sm:gap-3 md:gap-4 mb-2 sm:mb-3 md:mb-4 lg:mb-6">
-                              <div className={`${card.iconColor} transition-all duration-300 group-hover:scale-110`}>
-                                <IconComponent size={24} strokeWidth={1.5} className="sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-9 lg:h-9 xl:w-10 xl:h-10" />
-                              </div>
-                              <h3 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-white group-hover:text-white transition-colors">
-                                {card.title}
-                              </h3>
-                            </div>
-                            
-                            {/* Description */}
-                            <p className="text-neutral-200 mb-2 sm:mb-3 md:mb-4 lg:mb-6 text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed">
-                              {card.description}
-                            </p>
-                            
-                            {/* Contact Link */}
-                            <a 
-                              href={card.href}
-                              target={card.href.startsWith('http') ? "_blank" : undefined}
-                              rel={card.href.startsWith('http') ? "noopener noreferrer" : undefined}
-                              className={`${card.color} font-medium text-xs sm:text-sm md:text-base lg:text-lg transition-all duration-300 hover:underline hover:scale-105 inline-block`}
-                            >
-                              {card.contact}
-                            </a>
-                          </div>
-                          
-                          {/* Status */}
-                          <div className="mt-2 sm:mt-3 md:mt-4 lg:mt-6 xl:mt-8 flex items-center gap-2">
-                            <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 bg-emerald-400 rounded-full animate-pulse shadow-lg shadow-emerald-400/50"></div>
-                            <span className="text-xs sm:text-sm text-neutral-300 group-hover:text-neutral-200 transition-colors">
-                              {card.status}
-                            </span>
-                          </div>
-                        </div>
-                        
-                        {/* Hover highlight effect */}
-                        <div className="absolute inset-0 rounded-lg sm:rounded-xl md:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-white/[0.02] via-transparent to-transparent pointer-events-none"></div>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
+      <div className="relative z-10 flex-1 flex flex-col justify-center py-28 sm:py-36">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 w-full">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-14 sm:mb-18"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/[0.05] text-xs font-medium text-cyan-300/80 mb-8">
+              <MessageCircle size={12} />
+              Let&apos;s Connect
             </div>
-          </div>
-        </motion.div>
+            <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
+              <span className="bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-neutral-600">
+                Get In Touch
+              </span>
+            </h2>
+            <p className="text-neutral-500 text-sm sm:text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+              Ready to start your next project? Choose your preferred way to
+              connect.
+            </p>
+          </motion.div>
 
-        {/* Enhanced Footer/Copyright Section with glassmorphism */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={hasAnimated ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.6, delay: 1.2 }}
-          className="text-center pt-1 sm:pt-2 md:pt-3 lg:pt-4 xl:pt-6 max-w-4xl mx-auto px-3 sm:px-4 flex-shrink-0"
-        >
-        </motion.div>
+          {/* Contact Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+            {contactCards.map((card, index) => (
+              <MagneticCard
+                key={card.title}
+                card={card}
+                index={index}
+                isInView={isInView}
+              />
+            ))}
+          </div>
+        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-white/[0.04] py-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-gradient-to-r from-cyan-400 to-purple-400" />
+            <p className="text-xs text-neutral-600 font-medium">
+              &copy; {new Date().getFullYear()} Shahzaib Rehman
+            </p>
+          </div>
+          <div className="flex items-center gap-5">
+            {[
+              { icon: Github, href: "https://github.com/CodingWithShahzaib" },
+              { icon: Linkedin, href: "https://www.linkedin.com/in/shahzaib-rehman-1246591a6/" },
+              { icon: Mail, href: "mailto:shahzaibrehman40@gmail.com" },
+            ].map(({ icon: Icon, href }) => (
+              <a
+                key={href}
+                href={href}
+                target={href.startsWith("http") ? "_blank" : undefined}
+                rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+                className="text-neutral-700 hover:text-white transition-colors duration-300"
+              >
+                <Icon size={15} />
+              </a>
+            ))}
+          </div>
+        </div>
+      </footer>
     </section>
   );
 };
 
-export default ContactSection; 
+export default ContactSection;

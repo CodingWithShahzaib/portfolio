@@ -49,6 +49,10 @@ const config: Config = {
   darkMode: "class",
   theme: {
   	extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', ...defaultTheme.fontFamily.sans],
+        heading: ['var(--font-space-grotesk)', ...defaultTheme.fontFamily.sans],
+      },
   		backgroundImage: {
   			'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
   			'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
@@ -58,6 +62,13 @@ const config: Config = {
   			scroll: 'scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite',
         aurora: 'aurora 60s linear infinite',
         shimmer: "shimmer 2s linear infinite",
+        "gradient-x": "gradient-x 3s ease infinite",
+        "fade-in": "fade-in 0.6s ease-out forwards",
+        "slide-up": "slide-up 0.6s ease-out forwards",
+        marquee: "marquee var(--duration, 30s) linear infinite",
+        "marquee-vertical": "marquee-vertical var(--duration, 30s) linear infinite",
+        "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
+        pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
   		},
   		keyframes: {
   			spotlight: {
@@ -76,20 +87,35 @@ const config: Config = {
   				}
   			},
         aurora: {
-          from: {
-            backgroundPosition: '50% 50%, 50% 50%',
-          },
-          to: {
-            backgroundPosition: '350% 50%, 350% 50%',
-          },
+          from: { backgroundPosition: '50% 50%, 50% 50%' },
+          to: { backgroundPosition: '350% 50%, 350% 50%' },
         },
         shimmer: {
-          from: {
-            backgroundPosition: "0 0",
-          },
-          to: {
-            backgroundPosition: "-200% 0",
-          },
+          from: { backgroundPosition: "0 0" },
+          to: { backgroundPosition: "-200% 0" },
+        },
+        "gradient-x": {
+          "0%, 100%": { "background-size": "200% 200%", "background-position": "left center" },
+          "50%": { "background-size": "200% 200%", "background-position": "right center" },
+        },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        "slide-up": {
+          from: { opacity: "0", transform: "translateY(20px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(calc(-100% - var(--gap)))" },
+        },
+        "marquee-vertical": {
+          from: { transform: "translateY(0)" },
+          to: { transform: "translateY(calc(-100% - var(--gap)))" },
+        },
+        "border-beam": {
+          "100%": { "offset-distance": "100%" },
         },
   		},
   		borderRadius: {

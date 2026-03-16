@@ -1,9 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const spaceGrotesk = Space_Grotesk({ 
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+});
 
 export const metadata: Metadata = {
   title: "Shahzaib Rehman | Senior Software Engineer",
@@ -17,12 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark scroll-smooth">
-      <body className={`${inter.className} bg-black overflow-x-hidden`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans bg-black overflow-x-hidden antialiased`}>
           <Navbar />
           <main>
             {children}
           </main>
-
       </body>
     </html>
   );
